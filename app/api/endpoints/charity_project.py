@@ -10,7 +10,7 @@ from app.crud.charity_project import charity_project_crud
 from app.schemas.charity_project import (CharityProjectCreate,
                                          CharityProjectDB,
                                          CharityProjectUpdate)
-from app.services.investment import perform_investment
+from app.services.investments import investments
 
 router = APIRouter()
 
@@ -42,7 +42,7 @@ async def create_charity_project(
     new_charity_project = await charity_project_crud.create(
         obj_in=charity_project, session=session
     )
-    return await perform_investment(
+    return await investments(
         session=session, new_db_obj=new_charity_project
     )
 

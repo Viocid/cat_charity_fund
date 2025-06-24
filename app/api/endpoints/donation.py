@@ -6,7 +6,7 @@ from app.core.user import current_superuser, current_user
 from app.crud.donation import donation_crud
 from app.models.user import User
 from app.schemas.donation import DonationCreate, DonationDB, DonationOwnerView
-from app.services.investment import perform_investment
+from app.services.investments import investments
 
 router = APIRouter()
 
@@ -37,7 +37,7 @@ async def create_donation(
     new_donation = await donation_crud.create(
         obj_in=donation, user=user, session=session
     )
-    return await perform_investment(session=session, new_db_obj=new_donation)
+    return await investments(session=session, new_db_obj=new_donation)
 
 
 @router.get(
