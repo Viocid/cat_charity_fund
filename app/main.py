@@ -9,15 +9,14 @@ from app.core.init_db import create_first_superuser
 logging.basicConfig(
     level=logging.INFO,
     format=settings.logging_format,
-    datefmt=settings.logging_dt_format
+    datefmt=settings.logging_dt_format,
 )
 
-app = FastAPI(title=settings.app_title,
-              description=settings.app_description)
+app = FastAPI(title=settings.app_title, description=settings.app_description)
 
 app.include_router(main_router)
 
 
-@app.on_event('startup')
+@app.on_event("startup")
 async def startup():
     await create_first_superuser()

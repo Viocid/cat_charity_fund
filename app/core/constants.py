@@ -1,10 +1,10 @@
-JWT_TOKEN_URL = 'auth/jwt/login'
-JWT_AUTH_BACKEND_NAME = 'jwt'
+JWT_TOKEN_URL = "auth/jwt/login"
+JWT_AUTH_BACKEND_NAME = "jwt"
 NAME_MIN_LEN = 1
 NAME_MAX_LEN = 100
-PREFIX = '/charity_project'
-TAGS = ('charity_projects',)
-DONATION_PREFIX = '/donation'
-DONATION_TAGS = ('donations',)
+PREFIX = "/charity_project"
+TAGS = ("charity_projects",)
+DONATION_PREFIX = "/donation"
+DONATION_TAGS = ("donations",)
 ZERO = 0
 ONE = 1

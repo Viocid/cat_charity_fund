@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel, conint, Extra, Field, validator
+from pydantic import BaseModel, Extra, Field, conint, validator
 
 from app.core.constants import NAME_MAX_LEN, NAME_MIN_LEN, ZERO
 from app.schemas.mixins import DBMixin
@@ -22,16 +22,16 @@ class CharityProjectCreate(CharityProjectBase):
 
 
 class CharityProjectUpdate(CharityProjectBase):
-    @validator('name')
+    @validator("name")
     def name_not_none(cls, value: Optional[str]):
         if value is None:
-            raise ValueError('Название проекта не может быть пустым.')
+            raise ValueError("Название проекта не может быть пустым.")
         return value
 
-    @validator('description')
+    @validator("description")
     def description_not_none(cls, value: Optional[str]):
         if value is None:
-            raise ValueError('Описание проекта не может быть пустым.')
+            raise ValueError("Описание проекта не может быть пустым.")
         return value
 
     class Config:
@@ -40,4 +40,5 @@ class CharityProjectUpdate(CharityProjectBase):
 
 class CharityProjectDB(DBMixin, CharityProjectCreate):
     """Схема для отображения проектов."""
+
     pass

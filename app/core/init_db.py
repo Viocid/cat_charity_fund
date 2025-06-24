@@ -1,4 +1,4 @@
-from contextlib import asynccontextmanager, AsyncExitStack
+from contextlib import AsyncExitStack, asynccontextmanager
 
 from fastapi_users.exceptions import UserAlreadyExists
 from pydantic import EmailStr
@@ -14,9 +14,7 @@ get_user_manager_context = asynccontextmanager(get_user_manager)
 
 
 async def create_user(
-        email: EmailStr,
-        password: str,
-        is_superuser: bool = True
+    email: EmailStr, password: str, is_superuser: bool = True
 ):
     try:
         async with AsyncExitStack() as stack:
@@ -31,9 +29,7 @@ async def create_user(
             )
             await user_manager.create(
                 UserCreate(
-                    email=email,
-                    password=password,
-                    is_superuser=is_superuser
+                    email=email, password=password, is_superuser=is_superuser
                 )
             )
     except UserAlreadyExists:
@@ -41,10 +37,12 @@ async def create_user(
 
 
 async def create_first_superuser():
-    if not (settings.first_superuser_email is None or
-            settings.first_superuser_password is None):
+    if not (
+        settings.first_superuser_email is None or
+        settings.first_superuser_password is None
+    ):
         await create_user(
             email=settings.first_superuser_email,
             password=settings.first_superuser_password,
-            is_superuser=True
+            is_superuser=True,
         )

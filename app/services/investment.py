@@ -4,25 +4,24 @@ from typing import Union
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.constants import ONE, ZERO
 from app.crud.charity_project import charity_project_crud
 from app.crud.donation import donation_crud
 from app.models import CharityProject, Donation
-from app.core.constants import ZERO, ONE
 
 
 async def perform_investment(
-    session: AsyncSession,
-    new_db_obj: Union[CharityProject, Donation]
+    session: AsyncSession, new_db_obj: Union[CharityProject, Donation]
 ) -> Union[CharityProject, Donation]:
     """
     Функция распределения средств среди активных проектов и пожертвований.
     """
     try:
-        active_donations = await (
-            donation_crud.get_active_order_by_create_date(session)
+        active_donations = await donation_crud.get_active_order_by_create_date(
+            session
         )
-        active_projects = await (
-            charity_project_crud.get_active_order_by_create_date(session)
+        active_projects = (
+            await charity_project_crud.get_active_order_by_create_date(session)
         )
         if not (active_donations or active_projects):
             return
@@ -72,7 +71,11 @@ async def perform_investment(
 
     except SQLAlchemyError as error:
         await session.rollback()
-        raise SQLAlchemyError('В процессе распределения средств произошла ошибка.') from error
+        raise SQLAlchemyError(
+            "В процессе распределения средств произошла ошибка."
+        ) from error
     except Exception as error:
         await session.rollback()
-        raise Exception('В процессе распределения средств произошла ошибка.') from error
+        raise Exception(
+            "В процессе распределения средств произошла ошибка."
+        ) from error

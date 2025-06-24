@@ -8,7 +8,7 @@ from app.core.config import settings
 class PreBase:
 
     @declared_attr
-    def __tablename__(cls): # noqa N805
+    def __tablename__(cls):  # noqa N805
         return cls.__name__.lower()
 
     id = Column(Integer, primary_key=True)

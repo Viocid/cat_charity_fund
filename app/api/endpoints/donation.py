@@ -12,26 +12,27 @@ router = APIRouter()
 
 
 @router.get(
-    path='/',
+    path="/",
     response_model=list[DonationDB],
     response_model_exclude_none=True,
-    dependencies=(Depends(current_superuser),)
+    dependencies=(Depends(current_superuser),),
 )
 async def get_all_donations(
-    session: AsyncSession = Depends(get_async_session)
+    session: AsyncSession = Depends(get_async_session),
 ):
-    await donation_crud.get_multi(session=session)
+    donations = await donation_crud.get_multi(session=session)
+    return donations
 
 
 @router.post(
-    path='/',
+    path="/",
     response_model=DonationOwnerView,
-    response_model_exclude_none=True
+    response_model_exclude_none=True,
 )
 async def create_donation(
     donation: DonationCreate,
     user: User = Depends(current_user),
-    session: AsyncSession = Depends(get_async_session)
+    session: AsyncSession = Depends(get_async_session),
 ):
     new_donation = await donation_crud.create(
         obj_in=donation, user=user, session=session
@@ -40,13 +41,14 @@ async def create_donation(
 
 
 @router.get(
-    path='/my',
+    path="/my",
     response_model=list[DonationOwnerView],
-    response_model_exclude_none=True
+    response_model_exclude_none=True,
 )
 async def get_user_donations(
     user: User = Depends(current_user),
-    session: AsyncSession = Depends(get_async_session)
+    session: AsyncSession = Depends(get_async_session),
 ):
-    return await donation_crud.get_multi_for_current_user(user=user,
-                                                          session=session)
+    return await donation_crud.get_multi_for_current_user(
+        user=user, session=session
+    )

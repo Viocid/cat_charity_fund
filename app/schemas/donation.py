@@ -3,12 +3,12 @@ from typing import Optional
 
 from pydantic import BaseModel, conint
 
-from app.schemas.mixins import DBMixin
 from app.core.constants import ZERO
+from app.schemas.mixins import DBMixin
 
 
 class DonationCreate(BaseModel):
-    full_amount: conint(gt=0)
+    full_amount: conint(gt=ZERO)
     comment: Optional[str]
 
 

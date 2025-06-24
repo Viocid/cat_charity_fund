@@ -13,9 +13,7 @@ from app.schemas.charity_project import CharityProjectUpdate
 class CRUDCharityProject(CRUDBase):
 
     async def get_charity_project_by_name(
-        self,
-        charity_project_name: str,
-        session: AsyncSession
+        self, charity_project_name: str, session: AsyncSession
     ) -> Optional[CharityProject]:
         db_obj = await session.execute(
             select(CharityProject).where(
@@ -28,7 +26,7 @@ class CRUDCharityProject(CRUDBase):
         self,
         db_obj: CharityProject,
         obj_in: CharityProjectUpdate,
-        session: AsyncSession
+        session: AsyncSession,
     ):
         obj_data = jsonable_encoder(db_obj)
         update_data = obj_in.dict(exclude_unset=True)
@@ -44,9 +42,7 @@ class CRUDCharityProject(CRUDBase):
         return db_obj
 
     async def remove(
-        self,
-        db_obj: CharityProject,
-        session: AsyncSession
+        self, db_obj: CharityProject, session: AsyncSession
     ) -> CharityProject:
         await session.delete(db_obj)
         await session.commit()
