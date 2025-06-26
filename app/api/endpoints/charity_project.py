@@ -42,9 +42,7 @@ async def create_charity_project(
     new_charity_project = await charity_project_crud.create(
         obj_in=charity_project, session=session
     )
-    return await investments(
-        session=session, new_db_obj=new_charity_project
-    )
+    return await investments(session=session, new_db_obj=new_charity_project)
 
 
 @router.delete(

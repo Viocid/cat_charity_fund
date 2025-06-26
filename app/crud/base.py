@@ -52,3 +52,13 @@ class CRUDBase:
         )
         db_obj = db_objs.scalars().all()
         return db_obj
+
+    async def investment(
+        self, session: AsyncSession, new_db_obj: CharityProject
+    ) -> CharityProject:
+        await session.commit()
+        await session.refresh(new_db_obj)
+        return new_db_obj
+
+    async def roll(self, session: AsyncSession):
+        await session.rollback()

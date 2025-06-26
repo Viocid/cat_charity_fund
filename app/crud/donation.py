@@ -15,5 +15,21 @@ class CRUDDonation(CRUDBase):
         )
         return db_objs.scalars().all()
 
+    async def get_active_ordered(
+        self, session: AsyncSession
+    ) -> list[Donation]:
+        result = await session.execute(
+            select(Donation)
+            .where(Donation.fully_invested is False)
+            .order_by(Donation.create_date)
+        )
+        return result.scalars().all()
+
+    async def update_investment(
+        self, session: AsyncSession, first_donation: Donation
+    ) -> Donation:
+        await session.add(session, first_donation)
+        return first_donation
+
 
 donation_crud = CRUDDonation(Donation)

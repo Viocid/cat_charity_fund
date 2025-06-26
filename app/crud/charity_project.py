@@ -48,5 +48,21 @@ class CRUDCharityProject(CRUDBase):
         await session.commit()
         return db_obj
 
+    async def get_active_ordered(
+        self, session: AsyncSession
+    ) -> list[CharityProject]:
+        result = await session.execute(
+            select(CharityProject)
+            .where(CharityProject.fully_invested is False)
+            .order_by(CharityProject.create_date)
+        )
+        return result.scalars().all()
+
+    async def update_investment(
+        self, session: AsyncSession, first_project: CharityProject
+    ) -> CharityProject:
+        await session.add(session, first_project)
+        return first_project
+
 
 charity_project_crud = CRUDCharityProject(CharityProject)
