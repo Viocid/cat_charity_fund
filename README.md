@@ -31,13 +31,21 @@ alembic upgrade head
 bash
 uvicorn app.main:app --reload
 Сервер будет доступен по адресу: http://127.0.0.1:8000
+Основные endpoints:
+POST /projects/ - Создать новый проект
 
-Запуск через Docker
-bash
-docker-compose up --build
+GET /projects/ - Получить список проектов
+
+POST /donations/ - Сделать пожертвование
+
+GET /donations/ - Получить список пожертвований
+
+Google Sheets отчеты:
+POST /google/ - Создать отчет в Google Sheets (только для суперюзеров)
+
+Документация API доступна по адресу: http://127.0.0.1:8000/docs
 📡 Примеры запросов
 Создание проекта
-Документация находится по адресу "http://127.0.0.1:8000/docs"
 bash
 curl -X POST "http://127.0.0.1:8000/projects/" \
 -H "Authorization: Bearer YOUR_TOKEN" \
@@ -53,6 +61,7 @@ curl -X POST "http://127.0.0.1:8000/donations/" \
 -H "Authorization: Bearer YOUR_TOKEN" \
 -H "Content-Type: application/json" \
 -d '{"full_amount": 1000, "comment": "На корм котикам!"}'
+
 🛠 Используемые технологии
 Python + FastAPI (веб-фреймворк)
 
@@ -66,5 +75,18 @@ Docker (контейнеризация)
 
 Poetry (управление зависимостями)
 
+Aiogoogle (работа с Google API)
+
 👨‍💻 Автор
 Viocid – разработчик и кошачий энтузиаст 🐾http://127.0.0.1:8000
+
+Особенности реализации Google Sheets отчетов
+Для работы с Google API необходимо:
+
+Создать сервисный аккаунт в Google Cloud Console
+
+Включить Google Sheets API и Google Drive API
+
+Добавить в .env файл учетные данные сервисного аккаунта
+
+Выдать права доступа вашему email на редактирование таблиц
