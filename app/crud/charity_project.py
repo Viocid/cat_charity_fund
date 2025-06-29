@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional
 
 from fastapi.encoders import jsonable_encoder
-from sqlalchemy import select
+from sqlalchemy import extract, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud.base import CRUDBase
@@ -63,6 +63,21 @@ class CRUDCharityProject(CRUDBase):
     ) -> CharityProject:
         await session.add(session, first_project)
         return first_project
+
+    async def get_projects_by_completion_rate(
+        self,
+        session: AsyncSession,
+    ) -> list[CharityProject]:
+        completion_duration = extract(
+            "epoch", CharityProject.close_date
+        ) - extract("epoch", CharityProject.create_date)
+        statement = (
+            select(CharityProject)
+            .where(CharityProject.fully_invested is True)
+            .order_by(completion_duration.asc())
+        )
+        db_objs = await session.execute(statement)
+        return db_objs.scalars().all()
 
 
 charity_project_crud = CRUDCharityProject(CharityProject)
