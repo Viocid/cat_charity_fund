@@ -18,10 +18,13 @@ SCOPES = [
 ]
 DOCS_URL = "https://docs.google.com/spreadsheets/d/"
 
+
 def replace_privat_key(private_key):
     if private_key is not None:
         return private_key.replace("\\n", "\n")
     return private_key
+
+
 INFO = {
     "type": settings.type,
     "project_id": settings.project_id,
