@@ -65,7 +65,7 @@ async def spreadsheets_update_value(
     wrapper_services: Aiogoogle,
 ) -> None:
     service = await wrapper_services.discover("sheets", "v4")
-    now_time_for_report = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+    now_time_for_report = datetime.now().strftime(FORMAT)
     table_values = [
         ["Отчет от", now_time_for_report],
         ["Топ проектов по скорости закрытия"],
