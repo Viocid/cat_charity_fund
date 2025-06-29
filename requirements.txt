@@ -65,4 +65,4 @@ uvicorn[standard]==0.17.6
 watchgod==0.8.2
 websockets==10.3
 google-api-python-client==2.45.0
-aiogoogle==5.15.0
+aiogoogle==4.2.0

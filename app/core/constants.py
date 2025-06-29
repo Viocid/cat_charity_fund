@@ -17,11 +17,16 @@ SCOPES = [
     "https://www.googleapis.com/auth/drive",
 ]
 DOCS_URL = "https://docs.google.com/spreadsheets/d/"
+
+def replace_privat_key(private_key):
+    if private_key is not None:
+        return private_key.replace("\\n", "\n")
+    return private_key
 INFO = {
     "type": settings.type,
     "project_id": settings.project_id,
     "private_key_id": settings.private_key_id,
-    "private_key": settings.private_key.replace("\\n", "\n"),
+    "private_key": replace_privat_key(settings.private_key),
     "client_email": settings.client_email,
     "client_id": settings.client_id,
     "auth_uri": settings.auth_uri,
