@@ -1,5 +1,3 @@
-from urllib.parse import urljoin
-
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -9,6 +7,7 @@ from app.core.google_client import get_service
 from app.crud.charity_project import charity_project_crud
 from app.services.google import (set_user_permissions, spreadsheets_create,
                                  spreadsheets_update_value)
+from app.services.utils import url
 
 router = APIRouter()
 
@@ -36,6 +35,4 @@ async def get_report(
         wrapper_services=wrapper_services,
     )
 
-    report_url = urljoin(DOCS_URL, spreadsheet_id)
-
-    return {"report_url": report_url}
+    return {"report_url": url(DOCS_URL, spreadsheet_id)}

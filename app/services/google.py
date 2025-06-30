@@ -1,12 +1,12 @@
 import logging
 from datetime import datetime
-from urllib.parse import urljoin
 
 from aiogoogle import Aiogoogle
 
 from app.core.config import settings
 from app.core.constants import DOCS_URL, FORMAT
 from app.schemas.charity_project import CharityProjectDB
+from app.services.utils import url
 
 logger = logging.getLogger(__name__)
 
@@ -34,8 +34,7 @@ async def spreadsheets_create(wrapper_services: Aiogoogle) -> str:
         service.spreadsheets.create(json=spreadsheet_body)
     )
     spreadsheet_id = response["spreadsheetId"]
-    report_url = urljoin(DOCS_URL, spreadsheet_id)
-    logger.info("Создан документ: %s", report_url)
+    logger.info("Создан документ: %s", url(DOCS_URL, spreadsheet_id))
     return spreadsheet_id
 
 
@@ -61,7 +60,7 @@ async def set_user_permissions(
     logger.info(
         "Выданы права пользователю %s на документ: %s",
         settings.email,
-        urljoin(DOCS_URL, spreadsheet_id),
+        url(DOCS_URL, spreadsheet_id),
     )
 
 
@@ -101,5 +100,5 @@ async def spreadsheets_update_value(
     )
     logger.info(
         "Данные успешно записаны в документ: %s",
-        urljoin(DOCS_URL, spreadsheet_id),
+        url(DOCS_URL, spreadsheet_id),
     )
