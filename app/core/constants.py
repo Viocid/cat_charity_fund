@@ -1,4 +1,5 @@
 from app.core.config import settings
+from app.services.utils import replace_privat_key
 
 JWT_TOKEN_URL = "auth/jwt/login"
 JWT_AUTH_BACKEND_NAME = "jwt"
@@ -17,12 +18,6 @@ SCOPES = [
     "https://www.googleapis.com/auth/drive",
 ]
 DOCS_URL = "https://docs.google.com/spreadsheets/d/"
-
-
-def replace_privat_key(private_key):
-    if private_key is not None:
-        return private_key.replace("\\n", "\n")
-    return private_key
 
 
 INFO = {

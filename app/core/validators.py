@@ -1,4 +1,3 @@
-# app/core/validators.py
 from typing import Union
 
 from fastapi_users import InvalidPasswordException
