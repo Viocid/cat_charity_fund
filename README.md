@@ -1,92 +1,239 @@
-# Cat Charity Fund 🐱💙
+# Cat Charity Fund
 
-Проект **Cat Charity Fund** — это платформа для сбора пожертвований в пользу кошачьих приютов. Пользователи могут создавать проекты для сбора средств, делать пожертвования и отслеживать собранные суммы.
+![Python](https://img.shields.io/badge/Python-3.9%2B-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.78-009688)
+![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-1.4-red)
+![Alembic](https://img.shields.io/badge/Alembic-migrations-orange)
+![Pytest](https://img.shields.io/badge/Pytest-tested-green)
 
-## 🚀 Запуск проекта
+FastAPI backend service for charity project and donation management.
 
-### Требования
-- Python 3.9+
-- Docker (опционально, для запуска в контейнере)
-- Установленный `poetry` (для управления зависимостями)
+The application allows users to make donations to charity projects. Donations are automatically distributed between open projects according to the order in which donations and projects were created.
 
-### Инструкция по установке
+---
 
-1. **Клонируйте репозиторий:**
-   ```bash
-   git clone https://github.com/Viocid/cat_charity_fund.git
-   cd cat_charity_fund
-Установите зависимости:
+## Main features
 
-bash
-poetry install
-Настройте переменные окружения:
-Создайте файл .env в корне проекта и заполните его по примеру .env.example.
+- User registration and authentication
+- JWT-based authorization
+- Superuser-only charity project management
+- Donation creation for authenticated users
+- Automatic donation distribution between active projects
+- User-specific donation history
+- Google Sheets report generation
+- Async SQLAlchemy database layer
+- Alembic database migrations
+- API validation with Pydantic schemas
+- Automated tests with Pytest
 
-Примените миграции:
+---
 
-bash
+## Tech stack
+
+### Backend
+
+- Python
+- FastAPI
+- FastAPI Users
+- Pydantic
+
+### Database
+
+- SQLAlchemy
+- Alembic
+- SQLite by default
+- PostgreSQL-compatible configuration through `DATABASE_URL`
+
+### External integrations
+
+- Google Sheets API
+- Google Drive API
+- Aiogoogle
+
+### Testing and tools
+
+- Pytest
+- Pytest Asyncio
+- Flake8
+- Uvicorn
+
+---
+
+## Project structure
+
+```text
+cat_charity_fund/
+├── alembic/                 # Database migrations
+├── app/
+│   ├── api/                 # API routers, endpoints and validators
+│   ├── core/                # Config, database, users and Google client
+│   ├── crud/                # Database access layer
+│   ├── models/              # SQLAlchemy models
+│   ├── schemas/             # Pydantic schemas
+│   ├── services/            # Business logic and integrations
+│   └── main.py              # FastAPI application entry point
+├── tests/                   # Automated tests
+├── openapi.json             # OpenAPI schema
+├── alembic.ini              # Alembic configuration
+└── requirements.txt
+```
+
+---
+
+## API endpoints
+
+### Charity projects
+
+| Method | Endpoint | Description | Access |
+|---|---|---|---|
+| `GET` | `/charity_project/` | Get all charity projects | Public |
+| `POST` | `/charity_project/` | Create a charity project | Superuser |
+| `PATCH` | `/charity_project/{project_id}` | Update a charity project | Superuser |
+| `DELETE` | `/charity_project/{project_id}` | Delete a charity project | Superuser |
+
+### Donations
+
+| Method | Endpoint | Description | Access |
+|---|---|---|---|
+| `GET` | `/donation/` | Get all donations | Superuser |
+| `POST` | `/donation/` | Create a donation | Authenticated user |
+| `GET` | `/donation/my` | Get current user's donations | Authenticated user |
+
+### Authentication
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/auth/register` | Register a new user |
+| `POST` | `/auth/jwt/login` | Get JWT token |
+| `POST` | `/auth/jwt/logout` | Logout |
+| `GET` | `/users/me` | Get current user |
+| `PATCH` | `/users/me` | Update current user |
+
+### Reports
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/google/` | Create Google Sheets report with completed projects |
+
+---
+
+## Business logic
+
+The core feature of the project is automatic investment distribution.
+
+When a new donation or project is created, the service finds open donations and open charity projects, then distributes available amounts in creation order.
+
+A project or donation becomes closed when its `invested_amount` reaches `full_amount`.
+
+This demonstrates:
+
+- service-layer business logic;
+- transaction-like update flow;
+- separated CRUD and API layers;
+- validation before database updates.
+
+---
+
+## Local installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/Viocid/cat_charity_fund.git
+cd cat_charity_fund
+```
+
+Create and activate virtual environment:
+
+```bash
+python -m venv venv
+source venv/bin/activate      # Linux / macOS
+venv\Scripts\activate         # Windows
+```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Create `.env` file in the project root:
+
+```env
+APP_TITLE=Cat Charity Fund
+APP_DESCRIPTION=Charity donation API
+DATABASE_URL=sqlite+aiosqlite:///./fastapi.db
+SECRET=your-secret-key
+FIRST_SUPERUSER_EMAIL=admin@example.com
+FIRST_SUPERUSER_PASSWORD=admin-password
+```
+
+Apply migrations:
+
+```bash
 alembic upgrade head
-Запустите сервер:
+```
 
-bash
+Run the development server:
+
+```bash
 uvicorn app.main:app --reload
-Сервер будет доступен по адресу: http://127.0.0.1:8000
-Основные endpoints:
-POST /projects/ - Создать новый проект
+```
 
-GET /projects/ - Получить список проектов
+The API will be available at:
 
-POST /donations/ - Сделать пожертвование
+```text
+http://127.0.0.1:8000
+```
 
-GET /donations/ - Получить список пожертвований
+Interactive documentation:
 
-Google Sheets отчеты:
-POST /google/ - Создать отчет в Google Sheets (только для суперюзеров)
+```text
+http://127.0.0.1:8000/docs
+```
 
-Документация API доступна по адресу: http://127.0.0.1:8000/docs
-📡 Примеры запросов
-Создание проекта
-bash
-curl -X POST "http://127.0.0.1:8000/projects/" \
--H "Authorization: Bearer YOUR_TOKEN" \
--H "Content-Type: application/json" \
--d '{"name": "Спасение котиков", "description": "Помогите бездомным котикам!", "full_amount": 5000}'
-Получение списка проектов
-bash
-curl -X GET "http://127.0.0.1:8000/projects/" \
--H "Authorization: Bearer YOUR_TOKEN"
-Создание пожертвования
-bash
-curl -X POST "http://127.0.0.1:8000/donations/" \
--H "Authorization: Bearer YOUR_TOKEN" \
--H "Content-Type: application/json" \
--d '{"full_amount": 1000, "comment": "На корм котикам!"}'
+---
 
-🛠 Используемые технологии
-Python + FastAPI (веб-фреймворк)
+## Google Sheets integration
 
-SQLAlchemy (ORM)
+The project can create reports in Google Sheets through a service account.
 
-Alembic (миграции)
+To enable this feature, configure Google API credentials in `.env`:
 
-PostgreSQL (база данных)
+```env
+TYPE=
+PROJECT_ID=
+PRIVATE_KEY_ID=
+PRIVATE_KEY=
+CLIENT_EMAIL=
+CLIENT_ID=
+AUTH_URI=
+TOKEN_URI=
+AUTH_PROVIDER_X509_CERT_URL=
+CLIENT_X509_CERT_URL=
+EMAIL=
+```
 
-Docker (контейнеризация)
+The report contains completed charity projects sorted by completion speed.
 
-Poetry (управление зависимостями)
+---
 
-Aiogoogle (работа с Google API)
+## Running tests
 
-👨‍💻 Автор
-Viocid – разработчик и кошачий энтузиаст 🐾http://127.0.0.1:8000
+```bash
+pytest
+```
 
-Особенности реализации Google Sheets отчетов
-Для работы с Google API необходимо:
+---
 
-Создать сервисный аккаунт в Google Cloud Console
+## What this project demonstrates
 
-Включить Google Sheets API и Google Drive API
-
-Добавить в .env файл учетные данные сервисного аккаунта
-
-Выдать права доступа вашему email на редактирование таблиц
+- FastAPI backend development
+- Async database interaction with SQLAlchemy
+- Alembic migrations
+- JWT authentication
+- Role-based permissions
+- Business logic in service layer
+- External API integration
+- Automated testing
+- Clean project structure
